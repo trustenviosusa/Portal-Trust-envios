@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Envíos — Mi Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06091a;
+  --bg2:#0b1028;
+  --bg3:#0f1630;
+  --white:#ffffff;
+  --dark:#06091a;
+  --dark2:#0b1028;
+  --blue:#2d5be3;
+  --blue-mid:#4f7ef5;
+  --blue-light:rgba(79,126,245,.12);
+  --blue-soft:rgba(79,126,245,.08);
+  --gold:#d4a843;
+  --gold-mid:#e8be5a;
+  --gold-light:rgba(212,168,67,.1);
+  --gold-border:rgba(212,168,67,.3);
+  --green:#16a34a;
+  --green-light:rgba(22,163,74,.12);
+  --red:#dc2626;
+  --red-light:rgba(220,38,38,.12);
+  --amber:#d97706;
+  --amber-light:rgba(217,119,6,.12);
+  --text:#e8eaf6;
+  --text-mid:#b0b8d0;
+  --text-muted:#6b7a99;
+  --border:rgba(255,255,255,.08);
+  --border-mid:rgba(255,255,255,.12);
+  --sidebar-w:240px;
+  --r:10px;--r-lg:16px;--r-xl:22px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#06091a 0%,#0d1235 50%,#130d2e 100%);position:relative;overflow:hidden}
+.login-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(45,91,227,.3) 0%,transparent 70%);top:-100px;left:-100px;pointer-events:none}
+.login-glow2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(224,168,18,.12) 0%,transparent 70%);bottom:-50px;right:-50px;pointer-events:none}
+.login-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(20px);border-radius:var(--r-xl);padding:40px;width:100%;max-width:400px;position:relative;z-index:2}
+.login-logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
+.logo-icon{width:38px;height:38px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:18px;height:18px;fill:var(--gold-mid)}
+.logo-text{font-size:17px;font-weight:700;color:var(--white)}
+.logo-text em{color:var(--gold-mid);font-style:normal}
+.login-title{font-size:22px;font-weight:700;color:var(--white);text-align:center;margin-bottom:6px}
+.login-sub{font-size:13px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:28px;line-height:1.5}
+.f-grp{margin-bottom:14px}
+.f-lbl{font-size:12px;font-weight:600;color:rgba(255,255,255,.55);display:block;margin-bottom:5px;letter-spacing:.01em}
+.f-inp{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:var(--r);padding:11px 14px;font-size:14px;color:var(--white);outline:none;font-family:'Inter',sans-serif;transition:.15s}
+.f-inp:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(79,126,245,.15);background:rgba(255,255,255,.09)}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:var(--white);border:none;border-radius:var(--r);padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;margin-top:4px}
+.btn-login:hover{opacity:.88;transform:translateY(-1px)}
+.login-forgot{font-size:12px;color:var(--blue);text-align:right;margin:-8px 0 14px;cursor:pointer;font-weight:500}
+.login-demo{font-size:12px;color:var(--text-muted);text-align:center;margin-top:16px}
+.login-demo span{color:var(--blue);cursor:pointer;font-weight:600}
+
+/* REGISTER SCREEN */
+#register-screen{min-height:100vh;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#06091a 0%,#0d1235 50%,#130d2e 100%);position:relative;overflow:hidden}
+.register-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(20px);border-radius:var(--r-xl);padding:40px;width:100%;max-width:480px;position:relative;z-index:2}
+.reg-steps{display:flex;gap:0;margin-bottom:28px;position:relative}
+.reg-steps::before{content:'';position:absolute;top:14px;left:0;right:0;height:2px;background:var(--border);z-index:0}
+.reg-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;cursor:default}
+.reg-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:6px;transition:.2s}
+.reg-step.active .reg-step-dot{background:var(--blue);border-color:var(--blue);color:var(--white)}
+.reg-step.done .reg-step-dot{background:var(--green);border-color:var(--green);color:var(--white)}
+.reg-step-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.4);text-align:center;letter-spacing:.03em}
+.reg-step.active .reg-step-lbl{color:var(--blue-mid)}
+.reg-step.done .reg-step-lbl{color:var(--green)}
+.reg-panel{display:none}
+.reg-panel.active{display:block}
+.reg-nav{display:flex;gap:10px;margin-top:20px}
+.btn-reg-next{flex:1;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:var(--white);border:none;border-radius:var(--r);padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s}
+.btn-reg-next:hover{background:var(--blue)}
+.btn-reg-back{background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s}
+.btn-reg-back:hover{border-color:var(--blue);color:var(--blue)}
+.casillero-success{background:var(--dark);border-radius:var(--r-lg);padding:24px;text-align:center;color:var(--white);margin-bottom:16px}
+.cas-success-glow{position:relative;overflow:hidden;border-radius:var(--r-lg)}
+.cas-success-num{font-size:32px;font-weight:600;color:var(--gold-mid);font-family:'DM Mono',monospace;margin:10px 0 6px}
+.cas-success-addr{font-size:12px;color:rgba(255,255,255,.6);line-height:1.8;font-family:'DM Mono',monospace}
+.terms-check{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text-mid);line-height:1.5;margin-bottom:14px;cursor:pointer}
+.terms-check input{margin-top:2px;accent-color:var(--blue);width:15px;height:15px;flex-shrink:0}
+.terms-check a{color:var(--blue);font-weight:600}
+
+/* APP LAYOUT */
+#app{display:none;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:#04060f;border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:40;overflow-y:auto}
+.sidebar-logo{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sidebar-logo-inner{display:flex;align-items:center;gap:9px}
+.sb-logo-icon{width:32px;height:32px;background:rgba(255,255,255,.08);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-logo-icon svg{width:15px;height:15px;fill:var(--gold-mid)}
+.sb-logo-text{font-size:14px;font-weight:600;color:var(--white)}
+.sb-logo-text em{color:var(--gold-mid);font-style:normal}
+.sb-user{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--white);margin-bottom:8px}
+.sb-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px}
+.sb-casillero{font-size:11px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace}
+.sb-nav{padding:12px 10px;flex:1}
+.sb-section{font-size:10px;font-weight:600;color:rgba(255,255,255,.25);letter-spacing:.1em;text-transform:uppercase;padding:10px 10px 6px;margin-top:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r);cursor:pointer;transition:.15s;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;margin-bottom:2px;border:none;background:none;width:100%;text-align:left;font-family:'Inter',sans-serif}
+.nav-item:hover{background:rgba(255,255,255,.07);color:var(--white)}
+.nav-item.active{background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:var(--white)}
+.nav-item svg{width:16px;height:16px;fill:currentColor;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--gold-mid);color:#1a0e00;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:700}
+.nav-badge-red{background:var(--red);color:var(--white)}
+.sb-bottom{padding:12px 10px;border-top:1px solid rgba(255,255,255,.07)}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30}
+.topbar-title{font-size:16px;font-weight:700;color:var(--white)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.btn-wa-top{background:#25d366;color:var(--white);border:none;border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:.15s}
+.btn-wa-top:hover{background:#1cb859}
+.btn-wa-top svg{width:14px;height:14px;fill:white}
+.btn-report{background:var(--red-light);color:var(--red);border:1.5px solid rgba(220,38,38,.2);border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:.15s}
+.btn-report:hover{background:rgba(220,38,38,.12)}
+.btn-report svg{width:14px;height:14px;fill:var(--red)}
+
+.content{padding:28px;flex:1;background:var(--bg)}
+.page{display:none}
+.page.active{display:block}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px}
+.card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title svg{width:16px;height:16px;fill:var(--blue)}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px}
+.stat-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.stat-val{font-size:26px;font-weight:700;color:var(--white);margin-bottom:4px;font-family:'DM Mono',monospace}
+.stat-sub{font-size:12px;color:var(--text-muted)}
+.stat-card.blue{border-color:rgba(79,126,245,.2);background:rgba(79,126,245,.08)}
+.stat-card.blue .stat-val{color:var(--blue-mid)}
+.stat-card.gold{border-color:rgba(212,168,67,.25);background:rgba(212,168,67,.08)}
+.stat-card.gold .stat-val{color:var(--gold)}
+.stat-card.green{border-color:rgba(22,163,74,.2);background:rgba(22,163,74,.08)}
+.stat-card.green .stat-val{color:var(--green)}
+.stat-card.red{border-color:rgba(220,38,38,.2);background:rgba(220,38,38,.08)}
+.stat-card.red .stat-val{color:var(--red)}
+
+/* CASILLERO CARD */
+.casillero-card{background:linear-gradient(135deg,#0d1235,#162244);border:1px solid rgba(79,126,245,.2);border-radius:var(--r-lg);padding:26px;color:var(--white);position:relative;overflow:hidden;margin-bottom:22px;box-shadow:0 8px 32px rgba(45,91,227,.2)}
+.cas-glow{position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(36,82,201,.3) 0%,transparent 70%);pointer-events:none}
+.cas-glow2{position:absolute;bottom:-30px;left:60px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(224,168,18,.15) 0%,transparent 70%);pointer-events:none}
+.cas-label{font-size:10px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.cas-num{font-size:28px;font-weight:600;color:var(--gold-mid);font-family:'DM Mono',monospace;margin-bottom:14px}
+.cas-addr{font-size:13px;color:rgba(255,255,255,.7);line-height:1.8;font-family:'DM Mono',monospace}
+.cas-addr strong{color:var(--white)}
+.cas-copy{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:var(--white);border-radius:var(--r);padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:16px;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.cas-copy:hover{background:rgba(255,255,255,.18)}
+.cas-copy svg{width:13px;height:13px;fill:currentColor}
+.cas-copied{background:var(--green)!important;border-color:var(--green)!important}
+
+/* PACKAGE CARDS */
+.pkg-grid{display:grid;gap:10px}
+.pkg-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;display:flex;align-items:center;gap:14px;transition:.2s}
+.pkg-card:hover{border-color:var(--blue-mid);box-shadow:0 4px 16px rgba(36,82,201,.08)}
+.pkg-icon{width:40px;height:40px;border-radius:var(--r);background:rgba(79,126,245,.1);border:1px solid rgba(79,126,245,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pkg-icon svg{width:18px;height:18px;fill:var(--blue)}
+.pkg-info{flex:1}
+.pkg-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:3px}
+.pkg-meta{font-size:12px;color:var(--text-muted);display:flex;gap:12px;flex-wrap:wrap}
+.pkg-meta span{display:flex;align-items:center;gap:4px}
+.pkg-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.status-recibido{background:var(--green-light);color:var(--green)}
+.status-espera{background:var(--amber-light);color:var(--amber)}
+.status-transito{background:var(--blue-light);color:var(--blue)}
+.status-entregado{background:var(--bg);color:var(--text-muted)}
+.pkg-days{font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.days-ok{background:var(--green-light);color:var(--green)}
+.days-warn{background:var(--amber-light);color:var(--amber)}
+.days-danger{background:var(--red-light);color:var(--red)}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-full{grid-column:1/-1}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:var(--white);border:none;border-radius:var(--r);padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-primary svg{width:15px;height:15px;fill:currentColor}
+.btn-secondary{background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--border-mid);border-radius:var(--r);padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:.15s}
+.btn-secondary:hover{border-color:var(--blue-mid);color:var(--blue-mid);background:rgba(79,126,245,.08)}
+.upload-area{border:2px dashed rgba(255,255,255,.12);border-radius:var(--r);padding:24px;text-align:center;cursor:pointer;transition:.2s;background:rgba(255,255,255,.03)}
+.upload-area:hover{border-color:var(--blue-mid);background:rgba(79,126,245,.08)}
+.upload-icon{width:36px;height:36px;background:var(--blue-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.upload-icon svg{width:16px;height:16px;fill:var(--blue)}
+.upload-text{font-size:13px;color:var(--text-muted);line-height:1.5}
+.upload-text strong{color:var(--blue)}
+
+/* VALUE ALERT */
+.value-alert{background:var(--amber-light);border:1.5px solid rgba(217,119,6,.25);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--amber);display:none;align-items:flex-start;gap:9px;margin-top:4px;line-height:1.5;font-weight:500}
+.value-alert.show{display:flex}
+.value-alert svg{width:16px;height:16px;fill:currentColor;flex-shrink:0;margin-top:1px}
+
+/* CONSOLIDAR */
+.pkg-select-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.2s;margin-bottom:8px}
+.pkg-select-card:hover{border-color:var(--blue-mid)}
+.pkg-select-card.selected{border-color:var(--blue-mid);background:rgba(79,126,245,.1)}
+.pkg-checkbox{width:20px;height:20px;border:2px solid var(--border-mid);border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.pkg-select-card.selected .pkg-checkbox{background:var(--blue);border-color:var(--blue)}
+.pkg-checkbox svg{width:12px;height:12px;fill:white;display:none}
+.pkg-select-card.selected .pkg-checkbox svg{display:block}
+.consolidar-summary{background:var(--dark);border-radius:var(--r-lg);padding:20px;color:var(--white);margin-top:16px}
+.cs-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+.cs-row:last-child{border-bottom:none;padding-top:12px;margin-top:4px}
+.cs-label{color:rgba(255,255,255,.6)}
+.cs-val{font-weight:600;color:var(--white);font-family:'DM Mono',monospace}
+.cs-total{font-size:16px;color:var(--gold-mid)}
+.cs-warn{background:rgba(217,119,6,.15);border:1px solid rgba(217,119,6,.3);border-radius:var(--r);padding:10px 14px;font-size:12px;color:#fbbf24;display:none;margin-top:12px;align-items:flex-start;gap:8px;font-weight:500;line-height:1.5}
+.cs-warn.show{display:flex}
+
+/* TRACKING */
+.track-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:12px}
+.track-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.track-id{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--text-muted)}
+.track-guide{font-size:13px;font-weight:600;color:var(--blue);cursor:pointer}
+.track-guide:hover{text-decoration:underline}
+.track-steps{display:flex;gap:0;position:relative;margin-top:8px}
+.track-steps::before{content:'';position:absolute;top:14px;left:14px;right:14px;height:2px;background:var(--border);z-index:0}
+.track-step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1}
+.ts-dot{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.15);background:var(--bg2);display:flex;align-items:center;justify-content:center;margin-bottom:8px;transition:.2s}
+.ts-dot svg{width:13px;height:13px;fill:var(--text-muted)}
+.track-step.done .ts-dot{background:var(--green);border-color:var(--green)}
+.track-step.done .ts-dot svg{fill:white}
+.track-step.active .ts-dot{background:var(--blue);border-color:var(--blue)}
+.track-step.active .ts-dot svg{fill:white}
+.ts-label{font-size:10px;font-weight:600;color:var(--text-muted);text-align:center;line-height:1.3}
+.track-step.done .ts-label,.track-step.active .ts-label{color:var(--dark)}
+
+/* HISTORIAL */
+.hist-table{width:100%;border-collapse:collapse}
+.hist-table th{font-size:11px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,.03)}
+.hist-table td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text-mid);color:rgba(255,255,255,.65)}
+.hist-table tr:hover td{background:rgba(255,255,255,.03)}
+.hist-table tr:last-child td{border-bottom:none}
+
+/* PERFIL */
+.perfil-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.section-divider{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.08em;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:16px;backdrop-filter:blur(4px)}
+.modal{background:#0b1028;border:1px solid rgba(255,255,255,.1);border-radius:var(--r-xl);padding:28px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
+.modal-close{float:right;background:none;border:none;font-size:20px;color:rgba(255,255,255,.4);cursor:pointer;line-height:1;margin:-4px -4px 12px 0}
+.modal-close:hover{color:var(--white)}
+.modal-h2{font-size:17px;font-weight:700;color:var(--white);margin-bottom:4px}
+.modal-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;line-height:1.5}
+
+/* SUCCESS TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(15,22,48,.95);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px);color:var(--white);border-radius:var(--r);padding:12px 20px;font-size:13px;font-weight:500;display:none;align-items:center;gap:9px;z-index:300;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.toast.show{display:flex}
+.toast svg{width:16px;height:16px;fill:var(--green)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 20px;color:var(--text-muted)}
+.empty svg{width:40px;height:40px;fill:var(--border-mid);margin:0 auto 12px;display:block}
+.empty p{font-size:14px;line-height:1.6}
+.empty strong{color:var(--text-mid)}
+
+/* ── MOBILE RESPONSIVE ─────────────────────────────────────── */
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:.2s}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:35;backdrop-filter:blur(4px)}
+
+@media(max-width:768px){
+  /* Sidebar mobile */
+  .sidebar{transform:translateX(-100%);transition:transform .25s ease;z-index:40}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-overlay.show{display:block}
+  .main{margin-left:0}
+  .hamburger{display:flex}
+
+  /* Topbar */
+  .topbar{padding:0 16px;gap:8px}
+  .topbar-title{font-size:14px}
+  .btn-report span{display:none}
+  .btn-wa-top span{display:none}
+  .btn-report{padding:8px 10px}
+  .btn-wa-top{padding:8px 10px}
+
+  /* Content */
+  .content{padding:16px}
+
+  /* Stats grid */
+  .stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-val{font-size:20px}
+
+  /* Two col grids → single col */
+  .steps-grid,
+  .form-grid,
+  .features-grid,
+  .feat-grid,
+  .perfil-grid,
+  .calc-grid,
+  .pricing-grid,
+  .form-grid{grid-template-columns:1fr!important}
+
+  /* Dashboard two-col */
+  div[style*="grid-template-columns:1fr 1fr"]{
+    display:flex!important;flex-direction:column!important;gap:14px!important
+  }
+
+  /* Consolidar two-col */
+  div[style*="grid-template-columns:1.2fr 1fr"]{
+    display:flex!important;flex-direction:column!important;gap:14px!important
+  }
+
+  /* Package cards */
+  .pkg-card{flex-wrap:wrap;gap:10px}
+  .pkg-days{margin-left:0}
+
+  /* Casillero card */
+  .casillero-card{padding:20px}
+  .cas-num{font-size:22px}
+
+  /* Tracking steps */
+  .track-steps{gap:2px;overflow-x:auto;padding-bottom:8px}
+  .ts-label{font-size:9px}
+  .ts-dot{width:24px;height:24px}
+
+  /* History table */
+  .hist-table thead{display:none}
+  .hist-table tr{display:flex;flex-direction:column;padding:12px 14px;border-bottom:1px solid var(--border)}
+  .hist-table td{border:none;padding:2px 0;font-size:13px}
+  .hist-table td:first-child{font-weight:600;font-size:14px;color:var(--dark)}
+
+  /* Login & register cards */
+  .login-card,.register-card{padding:28px 20px;margin:16px}
+  .hero-h1{font-size:28px}
+
+  /* Form full col */
+  .form-full{grid-column:1}
+
+  /* Topbar right buttons — icon only */
+  .topbar-right{gap:6px}
+
+  /* Consolidar summary */
+  .consolidar-summary{padding:16px}
+
+  /* Pricing grid 2 cols on mobile */
+  .pricing-grid{grid-template-columns:1fr 1fr!important}
+
+  /* Casillero info grid */
+  div.perfil-grid{display:flex!important;flex-direction:column!important;gap:14px!important}
+}
+
+@media(max-width:400px){
+  .stats-grid{grid-template-columns:1fr}
+  .reg-step-lbl{font-size:9px}
+  .hero-h1{font-size:24px}
+}
+
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('afZ-XvQQ-xE7kTz1h');</script>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  <span id="toast-msg">Acción completada</span>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen" style="display:none">
+  <div class="login-glow"></div>
+  <div class="login-glow2"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="logo-text" style="font-size:20px;font-weight:800;letter-spacing:-.02em">Trust <em>Envíos</em></div>
+    </div>
+    <div class="login-title">Mi portal de casillero</div>
+    <div class="login-sub">Accede para gestionar tus paquetes y envíos a Colombia</div>
+    <div class="f-grp">
+      <label class="f-lbl">Correo electrónico</label>
+      <input class="f-inp" type="email" placeholder="juan@email.com" id="login-email">
+    </div>
+    <div class="f-grp">
+      <label class="f-lbl">Contraseña</label>
+      <input class="f-inp" type="password" placeholder="Tu contraseña" id="login-pass">
+    </div>
+    <div class="login-forgot">¿Olvidaste tu contraseña?</div>
+    <button class="btn-login" onclick="doLogin()">Entrar a mi portal</button>
+    <div class="login-demo">¿No tienes cuenta? <span onclick="showRegister()">Crear cuenta gratis →</span></div>
+  </div>
+</div>
+
+<!-- REGISTER SCREEN -->
+<div id="register-screen">
+  <div class="login-glow"></div>
+  <div class="login-glow2"></div>
+  <div class="register-card">
+    <div class="login-logo">
+      <div class="logo-text" style="font-size:20px;font-weight:800;letter-spacing:-.02em">Trust <em>Envíos</em></div>
+    </div>
+
+    <!-- Pasos -->
+    <div class="reg-steps" id="reg-steps">
+      <div class="reg-step active" id="rstep-1"><div class="reg-step-dot">1</div><div class="reg-step-lbl">Datos personales</div></div>
+      <div class="reg-step" id="rstep-2"><div class="reg-step-dot">2</div><div class="reg-step-lbl">Dirección Colombia</div></div>
+      <div class="reg-step" id="rstep-3"><div class="reg-step-dot">3</div><div class="reg-step-lbl">Acceso</div></div>
+      <div class="reg-step" id="rstep-4"><div class="reg-step-dot">✓</div><div class="reg-step-lbl">¡Listo!</div></div>
+    </div>
+
+    <!-- Panel 1: Datos personales -->
+    <div class="reg-panel active" id="rpanel-1">
+      <div class="login-title" style="text-align:left;font-size:18px;margin-bottom:4px">Datos personales</div>
+      <div class="login-sub" style="text-align:left;margin-bottom:20px">¿Cómo te llamamos?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="f-grp"><label class="f-lbl">Nombre</label><input class="f-inp" type="text" id="reg-nombre" placeholder="Juan"></div>
+        <div class="f-grp"><label class="f-lbl">Apellido</label><input class="f-inp" type="text" id="reg-apellido" placeholder="García"></div>
+      </div>
+      <div class="f-grp"><label class="f-lbl">Correo electrónico</label><input class="f-inp" type="email" id="reg-email" placeholder="juan@email.com"></div>
+      <div class="f-grp"><label class="f-lbl">WhatsApp (con código de país)</label><input class="f-inp" type="tel" id="reg-wa" placeholder="+57 300 000 0000"></div>
+      <div class="reg-nav">
+        <button class="btn-reg-back" onclick="showLogin()">← Iniciar sesión</button>
+        <button class="btn-reg-next" onclick="regNext(1)">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- Panel 2: Dirección Colombia -->
+    <div class="reg-panel" id="rpanel-2">
+      <div class="login-title" style="text-align:left;font-size:18px;margin-bottom:4px">Dirección en Colombia</div>
+      <div class="login-sub" style="text-align:left;margin-bottom:20px">¿Dónde entregamos tus paquetes?</div>
+      <div class="f-grp"><label class="f-lbl">Ciudad</label>
+        <select class="f-inp" id="reg-ciudad">
+          <option value="">Selecciona tu ciudad...</option>
+          <option>Bogotá</option><option>Medellín</option><option>Cali</option>
+          <option>Barranquilla</option><option>Cartagena</option><option>Bucaramanga</option>
+          <option>Pereira</option><option>Manizales</option><option>Santa Marta</option>
+          <option>Cúcuta</option><option>Ibagué</option><option>Otra ciudad</option>
+        </select>
+      </div>
+      <div class="f-grp"><label class="f-lbl">Dirección completa</label><input class="f-inp" type="text" id="reg-dir" placeholder="Cra 15 #80-25, Apto 301"></div>
+      <div class="f-grp"><label class="f-lbl">Barrio / Localidad</label><input class="f-inp" type="text" id="reg-barrio" placeholder="Chapinero, El Poblado..."></div>
+      <div class="f-grp"><label class="f-lbl">Teléfono fijo (opcional)</label><input class="f-inp" type="tel" placeholder="+57 1 234 5678"></div>
+      <div class="reg-nav">
+        <button class="btn-reg-back" onclick="regBack(2)">← Atrás</button>
+        <button class="btn-reg-next" onclick="regNext(2)">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- Panel 3: Contraseña -->
+    <div class="reg-panel" id="rpanel-3">
+      <div class="login-title" style="text-align:left;font-size:18px;margin-bottom:4px">Crea tu acceso</div>
+      <div class="login-sub" style="text-align:left;margin-bottom:20px">Elige una contraseña segura para tu portal.</div>
+      <div class="f-grp"><label class="f-lbl">Contraseña</label><input class="f-inp" type="password" id="reg-pass" placeholder="Mínimo 8 caracteres"></div>
+      <div class="f-grp"><label class="f-lbl">Confirmar contraseña</label><input class="f-inp" type="password" id="reg-pass2" placeholder="Repite tu contraseña"></div>
+      <div style="background:var(--bg);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--text-muted);margin-bottom:14px;line-height:1.7">
+        <div style="font-weight:600;color:var(--text-mid);margin-bottom:4px">Tu contraseña debe tener:</div>
+        <div id="req-len" style="color:var(--text-muted)">○ Mínimo 8 caracteres</div>
+        <div id="req-num" style="color:var(--text-muted)">○ Al menos un número</div>
+        <div id="req-match" style="color:var(--text-muted)">○ Las contraseñas coinciden</div>
+      </div>
+      <label class="terms-check">
+        <input type="checkbox" id="reg-terms">
+        <span>Acepto los <a href="https://politicas-trustenvios.netlify.app" target="_blank">Términos de servicio</a> y la <a href="https://politicas-trustenvios.netlify.app" target="_blank">Política de privacidad</a> de Trust Envíos</span>
+      </label>
+      <div class="reg-nav">
+        <button class="btn-reg-back" onclick="regBack(3)">← Atrás</button>
+        <button class="btn-reg-next" onclick="regNext(3)">Crear mi cuenta →</button>
+      </div>
+    </div>
+
+    <!-- Panel 4: Éxito -->
+    <div class="reg-panel" id="rpanel-4">
+      <div style="text-align:center;padding:8px 0">
+        <div style="width:60px;height:60px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--green)"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div class="login-title" style="font-size:20px;margin-bottom:6px">¡Cuenta creada!</div>
+        <div class="login-sub" style="margin-bottom:20px">Tu casillero en Florida está listo. Ya puedes empezar a comprar en USA.</div>
+        <div class="casillero-success">
+          <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em">Tu número de casillero</div>
+          <div class="cas-success-num" id="reg-cas-num">--</div>
+          <div class="cas-success-addr">
+            <span id="reg-cas-name">--</span> · <strong style="color:white" id="reg-cas-num-addr">--</strong><br>
+            13060 State Road 84<br>
+            Davie, FL 33325, USA
+          </div>
+        </div>
+        <div style="background:var(--gold-light);border:1.5px solid var(--gold-border);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--gold);display:flex;gap:9px;align-items:flex-start;text-align:left;margin-bottom:20px;font-weight:500">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Te enviamos un correo de bienvenida con tu casillero e instrucciones completas. Revisa también tu carpeta de spam.
+        </div>
+        <button class="btn-login" onclick="doLoginFromRegister()">Entrar a mi portal →</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-muted)" id="reg-login-link">
+      ¿Ya tienes cuenta? <span style="color:var(--blue);cursor:pointer;font-weight:600" onclick="showLogin()">Iniciar sesión</span>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-inner">
+          <div class="sb-logo-text" style="font-size:16px;font-weight:800;letter-spacing:-.01em">Trust <em>Envíos</em></div>
+        </div>
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-avatar">--</div>
+        <div class="sb-name" id="sb-name">Cargando...</div>
+        <div class="sb-casillero" id="sb-casillero">--</div>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-section">Principal</div>
+        <button class="nav-item active" onclick="showPage('dashboard',this)">
+          <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard
+        </button>
+        <button class="nav-item" onclick="showPage('casillero',this)">
+          <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Mi casillero
+        </button>
+        <div class="sb-section">Paquetes</div>
+        <button class="nav-item" onclick="showPage('declarar',this)">
+          <svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+          Declarar paquete
+        </button>
+        <button class="nav-item" onclick="showPage('paquetes',this)">
+          <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          Mis paquetes
+        </button>
+        <button class="nav-item" onclick="showPage('consolidar',this)">
+          <svg viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Consolidar y pagar
+        </button>
+        <div class="sb-section">Seguimiento</div>
+        <button class="nav-item" onclick="showPage('tracking',this)">
+          <svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+          Tracking
+        </button>
+        <button class="nav-item" onclick="showPage('historial',this)">
+          <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Historial
+        </button>
+        <div class="sb-section">Cuenta</div>
+        <button class="nav-item" onclick="showPage('perfil',this)">
+          <svg viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          Mi perfil
+        </button>
+      </nav>
+      <div class="sb-bottom">
+        <button class="nav-item" onclick="doLogout()">
+          <svg viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-right">
+          <button class="btn-report" onclick="showModal('report')">
+            <svg viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            Reportar inconveniente
+          </button>
+          <button class="btn-wa-top" onclick="openWA()">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a3.178 3.178 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.025.507 3.934 1.395 5.61L0 24l6.545-1.371A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.817 9.817 0 01-5.002-1.368l-.358-.214-3.724.98.993-3.648-.234-.374A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
+            WhatsApp
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+          <div class="stats-grid">
+            <div class="stat-card blue">
+              <div class="stat-label">Paquetes en bodega</div>
+              <div class="stat-val">0</div>
+              <div class="stat-sub">Listos para enviar</div>
+            </div>
+            <div class="stat-card gold">
+              <div class="stat-label">Días bodegaje gratis</div>
+              <div class="stat-val">15</div>
+              <div class="stat-sub">Días disponibles</div>
+            </div>
+            <div class="stat-card green">
+              <div class="stat-label">Envíos completados</div>
+              <div class="stat-val">0</div>
+              <div class="stat-sub">Entregados en Colombia</div>
+            </div>
+            <div class="stat-card red">
+              <div class="stat-label">Valor acumulado</div>
+              <div class="stat-val">$0</div>
+              <div class="stat-sub">Límite: $200 USD</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="card">
+              <div class="card-title"><svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Paquetes recientes</div>
+              <div class="empty" style="padding:24px 10px">
+                <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                <p><strong>No tienes paquetes aún</strong><br>Registra tu primer paquete cuando hagas una compra en USA.</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title"><svg viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Alertas</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="background:rgba(217,119,6,.1);border:1px solid rgba(217,119,6,.25);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--amber);display:flex;gap:9px;align-items:flex-start;font-weight:500">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                  <span>Recuerda que el valor total de tus paquetes no debe superar $200 USD para evitar cargos adicionales en Colombia.</span>
+                </div>
+                <div style="background:rgba(79,126,245,.08);border:1px solid rgba(79,126,245,.2);border-radius:var(--r);padding:12px 14px;font-size:13px;color:var(--blue);display:flex;gap:9px;align-items:flex-start;font-weight:500">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>Bienvenido. Registra tus paquetes cuando lleguen a nuestra bodega y solicita tu envío.</span>
+                </div>
+              </div>
+              <button class="btn-primary" style="margin-top:16px;width:100%;justify-content:center" onclick="showPage('consolidar',null)">
+                <svg viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                Consolidar y pagar ahora
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MI CASILLERO -->
+        <div class="page" id="page-casillero">
+          <div class="casillero-card">
+            <div class="cas-glow"></div>
+            <div class="cas-glow2"></div>
+            <div class="cas-label">Tu número de casillero</div>
+            <div class="cas-num" id="cas-num-page">--</div>
+            <div class="cas-label" style="margin-top:4px">Dirección de envío en USA</div>
+            <div class="cas-addr">
+              <strong id="cas-addr-name">-- · --</strong><br>
+              13060 State Road 84<br>
+              Davie, FL 33325<br>
+              United States
+            </div>
+            <button class="cas-copy" id="copy-btn" onclick="copyAddress()">
+              <svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              Copiar dirección
+            </button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="card">
+              <div class="card-title"><svg viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Cómo usar tu casillero</div>
+              <div style="font-size:13px;color:var(--text-mid);line-height:1.8;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span><span>Copia la dirección de arriba</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span><span>Úsala como dirección de envío al hacer checkout en cualquier tienda de USA</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span><span>Declara tu paquete en el portal una vez hagas la compra</span></div>
+                <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</span><span>Te avisamos por WhatsApp cuando llegue a nuestra bodega</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>Reglas importantes</div>
+              <div style="font-size:13px;color:var(--text-mid);line-height:1.7;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:8px"><span style="color:var(--green);font-weight:700">✓</span><span>Valor máximo por envío: <strong>$200 USD</strong> sin IVA colombiano</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--green);font-weight:700">✓</span><span>Bodegaje gratis: <strong>15 días</strong> desde llegada</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--green);font-weight:700">✓</span><span>Máximo <strong>6 unidades iguales</strong> por caja</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--red);font-weight:700">✗</span><span>No se aceptan celulares ni smartphones</span></div>
+                <div style="display:flex;gap:8px"><span style="color:var(--red);font-weight:700">✗</span><span>No se aceptan líquidos inflamables</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DECLARAR PAQUETE -->
+        <div class="page" id="page-declarar">
+          <div class="card">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>Declarar nuevo paquete</div>
+            <div class="form-grid">
+              <div class="f-grp">
+                <label class="f-lbl">Tienda donde compraste</label>
+                <select class="f-inp">
+                  <option value="">Seleccionar tienda...</option>
+                  <option>Amazon</option><option>Nike</option><option>Sephora</option>
+                  <option>Walmart</option><option>Target</option><option>eBay</option>
+                  <option>Best Buy</option><option>Shein</option><option>Otra</option>
+                </select>
+              </div>
+              <div class="f-grp">
+                <label class="f-lbl">Número de tracking del proveedor</label>
+                <input class="f-inp" type="text" placeholder="Ej: 1Z999AA10123456784" style="font-family:'DM Mono',monospace">
+              </div>
+              <div class="f-grp form-full">
+                <label class="f-lbl">Descripción del producto</label>
+                <input class="f-inp" type="text" placeholder="Ej: Tenis Nike Air Max 270, talla 9, color blanco">
+              </div>
+              <div class="f-grp">
+                <label class="f-lbl">Valor declarado (USD)</label>
+                <input class="f-inp" type="number" placeholder="Ej: 95" id="decl-valor" oninput="checkDeclValue()" min="0" step="1">
+                <div class="value-alert" id="decl-alert">
+                  <svg viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                  <span id="decl-alert-txt"></span>
+                </div>
+              </div>
+              <div class="f-grp">
+                <label class="f-lbl">Peso estimado (lbs)</label>
+                <input class="f-inp" type="number" placeholder="Ej: 2.5" min="0" step="0.5">
+              </div>
+              <div class="f-grp">
+                <label class="f-lbl">Cantidad de unidades</label>
+                <input class="f-inp" type="number" placeholder="Ej: 1" min="1" max="6" value="1">
+              </div>
+              <div class="f-grp form-full">
+                <label class="f-lbl">Foto de factura o confirmación de compra</label>
+                <div class="upload-area" onclick="showToast('Función de carga lista en la versión conectada')">
+                  <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg></div>
+                  <div class="upload-text"><strong>Haz clic para subir</strong> o arrastra tu archivo aquí<br>JPG, PNG o PDF · Máx. 5MB</div>
+                </div>
+              </div>
+              <div class="f-grp form-full">
+                <label class="f-lbl">Notas adicionales (opcional)</label>
+                <textarea class="f-inp" rows="2" placeholder="Ej: Viene en dos cajas separadas, color especial, etc." style="resize:vertical"></textarea>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:8px">
+              <button class="btn-primary" onclick="declararPaquete()">
+                <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Declarar paquete
+              </button>
+              <button class="btn-secondary">Cancelar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIS PAQUETES -->
+        <div class="page" id="page-paquetes">
+          <div class="card">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Mis paquetes en bodega</div>
+            <div class="empty" style="padding:32px 10px">
+              <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              <p><strong>No tienes paquetes registrados</strong><br>Cuando hagas una compra en USA, regístrala aquí para que podamos recibirla en bodega.</p>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:10px">
+              <button class="btn-primary" onclick="showPage('declarar',null)">
+                <svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+                Declarar nuevo paquete
+              </button>
+              <button class="btn-secondary" onclick="showPage('consolidar',null)">Consolidar seleccionados</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONSOLIDAR Y PAGAR -->
+        <div class="page" id="page-consolidar">
+          <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:16px;align-items:start">
+            <div class="card">
+              <div class="card-title"><svg viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Selecciona los paquetes a enviar</div>
+              <div id="consolidar-list">
+                <div class="empty" style="padding:24px 10px">
+                  <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                  <p><strong>No hay paquetes en bodega</strong><br>Registra tus paquetes primero para poder consolidarlos.</p>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:12px;color:var(--text-muted)">Los paquetes marcados en verde se incluirán en el envío.</div>
+            </div>
+            <div>
+              <div class="consolidar-summary">
+                <div class="cs-row"><span class="cs-label">Paquetes seleccionados</span><span class="cs-val" id="cs-pkgs">2</span></div>
+                <div class="cs-row"><span class="cs-label">Peso total</span><span class="cs-val" id="cs-peso">3.7 lbs</span></div>
+                <div class="cs-row"><span class="cs-label">Valor declarado total</span><span class="cs-val" id="cs-valor">$140 USD</span></div>
+                <div class="cs-row"><span class="cs-label">Escalón de tarifa</span><span class="cs-val">5 lbs → $25</span></div>
+                <div class="cs-row"><span class="cs-label">Bodegaje adicional</span><span class="cs-val">$0</span></div>
+                <div class="cs-row"><span class="cs-label" style="font-size:15px;color:white">Total a pagar</span><span class="cs-total cs-val" id="cs-total">$25 USD</span></div>
+              </div>
+              <div class="cs-warn" id="cs-warn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;margin-top:1px"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <span id="cs-warn-txt"></span>
+              </div>
+              <button class="btn-primary" style="width:100%;justify-content:center;margin-top:14px;padding:14px;background:#25d366;border:none" onclick="solicitarPagoWA()">
+                <svg viewBox="0 0 24 24" style="fill:white;width:18px;height:18px;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a3.178 3.178 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.025.507 3.934 1.395 5.61L0 24l6.545-1.371A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.817 9.817 0 01-5.002-1.368l-.358-.214-3.724.98.993-3.648-.234-.374A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182c5.42 0 9.818 4.398 9.818 9.818 0 5.42-4.398 9.818-9.818 9.818z"/></svg>
+                Solicitar link de pago por WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRACKING -->
+        <div class="page" id="page-tracking">
+          <div class="card">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>Tracking de envíos</div>
+            <div class="empty" style="padding:32px 10px">
+              <svg viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+              <p><strong>No tienes envíos en tránsito</strong><br>Cuando despachemos tu primer envío podrás rastrearlo aquí con la guía de Coordinadora o Deprisa.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- HISTORIAL -->
+        <div class="page" id="page-historial">
+          <div class="card">
+            <div class="card-title"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Historial de envíos</div>
+            <table class="hist-table">
+              <thead><tr><th>Envío</th><th>Fecha</th><th>Contenido</th><th>Peso</th><th>Total pagado</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text-muted)">No tienes envíos anteriores aún.</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:16px;font-size:13px;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+              <span>3 envíos · Total pagado: <strong style="color:var(--dark)">$85.00 USD</strong></span>
+              <button class="btn-secondary" style="font-size:12px;padding:7px 14px">Descargar historial</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERFIL -->
+        <div class="page" id="page-perfil">
+          <div class="perfil-grid">
+            <div class="card">
+              <div class="card-title"><svg viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Datos personales</div>
+              <div class="form-grid" style="grid-template-columns:1fr 1fr">
+                <div class="f-grp"><label class="f-lbl">Nombre</label><input class="f-inp" value="Juan"></div>
+                <div class="f-grp"><label class="f-lbl">Apellido</label><input class="f-inp" value="García"></div>
+                <div class="f-grp form-full"><label class="f-lbl">Correo electrónico</label><input class="f-inp" type="email" value="juan.garcia@email.com"></div>
+                <div class="f-grp form-full"><label class="f-lbl">WhatsApp</label><input class="f-inp" value="+57 300 000 0000"></div>
+              </div>
+              <div class="section-divider">Dirección de entrega en Colombia</div>
+              <div class="form-grid" style="grid-template-columns:1fr">
+                <div class="f-grp"><label class="f-lbl">Dirección completa</label><input class="f-inp" id="perfil-dir" value=""></div>
+                <div class="f-grp"><label class="f-lbl">Ciudad</label><input class="f-inp" id="perfil-ciudad" value=""></div>
+                <div class="f-grp"><label class="f-lbl">Barrio / Localidad</label><input class="f-inp" id="perfil-barrio" value=""></div>
+              </div>
+              <button class="btn-primary" onclick="showToast('Perfil actualizado correctamente')">
+                <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                Guardar cambios
+              </button>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:14px">
+                <div class="card-title"><svg viewBox="0 0 24 24"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>Cambiar contraseña</div>
+                <div class="f-grp"><label class="f-lbl">Contraseña actual</label><input class="f-inp" type="password" placeholder="••••••••"></div>
+                <div class="f-grp"><label class="f-lbl">Nueva contraseña</label><input class="f-inp" type="password" placeholder="Mínimo 8 caracteres"></div>
+                <div class="f-grp"><label class="f-lbl">Confirmar nueva contraseña</label><input class="f-inp" type="password" placeholder="Repite la contraseña"></div>
+                <button class="btn-primary" onclick="showToast('Contraseña actualizada correctamente')">Actualizar contraseña</button>
+              </div>
+              <div class="card">
+                <div class="card-title"><svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>Mi casillero</div>
+                <div style="background:var(--bg);border-radius:var(--r);padding:14px">
+                  <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Número asignado</div>
+                  <div style="font-size:22px;font-weight:600;color:var(--blue);font-family:'DM Mono',monospace" id="perfil-casillero">--</div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.7;font-family:'DM Mono',monospace">13060 State Road 84<br>Davie, FL 33325, USA</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REPORTE -->
+<div id="modal-report" style="display:none" class="modal-bg" onclick="closeMBg(event,'modal-report')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-report')">×</button>
+    <div class="modal-h2">Reportar inconveniente</div>
+    <div class="modal-sub">Cuéntanos qué problema tienes con tu paquete. Te responderemos por WhatsApp a la brevedad.</div>
+    <div class="f-grp">
+      <label class="f-lbl">¿Con qué paquete tienes el inconveniente?</label>
+      <select class="f-inp">
+        <option>Tenis Nike Air Max 270</option>
+        <option>Cremas Sephora x3</option>
+        <option>Suplementos deportivos</option>
+        <option>Envío TE-847-003 (en tránsito)</option>
+        <option>Otro</option>
+      </select>
+    </div>
+    <div class="f-grp">
+      <label class="f-lbl">Tipo de inconveniente</label>
+      <select class="f-inp">
+        <option>Paquete dañado al llegar</option>
+        <option>Paquete no ha llegado a bodega</option>
+        <option>Paquete perdido en tránsito</option>
+        <option>Problema con el cobro</option>
+        <option>Error en la dirección de entrega</option>
+        <option>Otro</option>
+      </select>
+    </div>
+    <div class="f-grp">
+      <label class="f-lbl">Descripción del problema</label>
+      <textarea class="f-inp" rows="3" placeholder="Describe el inconveniente con el mayor detalle posible..." style="resize:vertical"></textarea>
+    </div>
+    <div class="f-grp">
+      <label class="f-lbl">Foto de evidencia (opcional)</label>
+      <div class="upload-area" onclick="showToast('Función de carga lista en la versión conectada')">
+        <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg></div>
+        <div class="upload-text"><strong>Subir foto</strong> del paquete o del problema</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn-primary" style="flex:1;justify-content:center" onclick="enviarReporte()">
+        <svg viewBox="0 0 24 24"><path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        Enviar reporte
+      </button>
+      <button class="btn-secondary" onclick="closeModal('modal-report')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAGO -->
+<div id="modal-pago" style="display:none" class="modal-bg" onclick="closeMBg(event,'modal-pago')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-pago')">×</button>
+    <div class="modal-h2">Confirmar y pagar</div>
+    <div class="modal-sub">Revisa el resumen antes de proceder al pago.</div>
+    <div style="background:var(--bg);border-radius:var(--r);padding:16px;margin-bottom:18px;font-size:13px;color:var(--text-mid);line-height:1.9">
+      <div style="display:flex;justify-content:space-between"><span>Tenis Nike Air Max 270</span><span>2.5 lbs · $95</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Cremas Sephora x3</span><span>1.2 lbs · $45</span></div>
+      <div style="border-top:1px solid var(--border);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-weight:600;color:var(--dark);font-size:14px"><span>Total</span><span>$25.00 USD</span></div>
+    </div>
+    <div class="f-grp">
+      <label class="f-lbl">Número de tarjeta</label>
+      <input class="f-inp" placeholder="0000 0000 0000 0000" style="font-family:'DM Mono',monospace">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="f-grp"><label class="f-lbl">Vencimiento</label><input class="f-inp" placeholder="MM/AA"></div>
+      <div class="f-grp"><label class="f-lbl">CVV</label><input class="f-inp" placeholder="000" style="font-family:'DM Mono',monospace"></div>
+    </div>
+    <div class="f-grp">
+      <label class="f-lbl">Nombre en la tarjeta</label>
+      <input class="f-inp" placeholder="Como aparece en la tarjeta">
+    </div>
+    <div style="background:var(--blue-light);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--blue);display:flex;gap:8px;align-items:center;margin-bottom:14px;font-weight:500">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Pago seguro procesado por Stripe. Tus datos están protegidos.
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px" onclick="pagarEnvio()">
+      <svg viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+      Pagar $25.00 USD
+    </button>
+  </div>
+</div>
+
+<script>
+// ── SESSION MANAGEMENT ──────────────────────────────────────────
+const SESSION_KEY = 'te_session';
+
+function saveSession(userData){
+  localStorage.setItem(SESSION_KEY, JSON.stringify(userData));
+}
+function getSession(){
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch(e){ return null; }
+}
+function clearSession(){
+  localStorage.removeItem(SESSION_KEY);
+}
+function applyUserToUI(user){
+  if(!user) return;
+  const initials = (user.nombre.charAt(0)+(user.apellido||'').charAt(0)).toUpperCase();
+  const fullName = user.nombre+' '+(user.apellido||'');
+  const casillero = user.casillero||'--';
+  // Sidebar
+  const sbAvatar = document.getElementById('sb-avatar');
+  const sbName = document.getElementById('sb-name');
+  const sbCasillero = document.getElementById('sb-casillero');
+  if(sbAvatar) sbAvatar.textContent = initials;
+  if(sbName) sbName.textContent = fullName;
+  if(sbCasillero) sbCasillero.textContent = casillero;
+  // Mi casillero page
+  const casNumPage = document.getElementById('cas-num-page');
+  const casAddrName = document.getElementById('cas-addr-name');
+  if(casNumPage) casNumPage.textContent = casillero;
+  if(casAddrName) casAddrName.textContent = fullName+' · '+casillero;
+  // Perfil page
+  const perfilCasillero = document.getElementById('perfil-casillero');
+  if(perfilCasillero) perfilCasillero.textContent = casillero;
+  const perfilNombre = document.getElementById('perfil-nombre');
+  const perfilApellido = document.getElementById('perfil-apellido');
+  const perfilEmail = document.getElementById('perfil-email');
+  const perfilWa = document.getElementById('perfil-wa');
+  const perfilDir = document.getElementById('perfil-dir');
+  const perfilCiudad = document.getElementById('perfil-ciudad');
+  const perfilBarrio = document.getElementById('perfil-barrio');
+  if(perfilNombre) perfilNombre.value = user.nombre||'';
+  if(perfilApellido) perfilApellido.value = user.apellido||'';
+  if(perfilEmail) perfilEmail.value = user.email||'';
+  if(perfilWa) perfilWa.value = user.wa||'';
+  if(perfilDir) perfilDir.value = user.dir||'';
+  if(perfilCiudad) perfilCiudad.value = user.ciudad||'';
+  if(perfilBarrio) perfilBarrio.value = user.barrio||'';
+  // Casillero copy button address
+  document.querySelectorAll('.cas-success-num').forEach(el=>el.textContent=casillero);
+}
+
+// ── BOOT: check session on load ──────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  const session = getSession();
+  if(session){
+    // Already logged in — go straight to app
+    enterApp(session);
+  } else if(window.location.search.includes('register=true')||window.location.hash==='#register'){
+    showRegister();
+  } else {
+    document.getElementById('login-screen').style.display='flex';
+  }
+});
+
+function showLogin(){
+  document.getElementById('register-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}
+function showRegister(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('register-screen').style.display='flex';
+  setRegStep(1);
+}
+function enterApp(user){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('register-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  if(user) applyUserToUI(user);
+}
+function doLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){ showToast('Ingresa tu correo electrónico'); return; }
+  // Save minimal session (demo — in production validate with backend)
+  const namePart = email.split('@')[0];
+  const user = {
+    nombre: namePart.charAt(0).toUpperCase()+namePart.slice(1),
+    apellido: '',
+    email: email,
+    casillero: 'TE-' + String(Math.floor(10000+Math.random()*90000))
+  };
+  saveSession(user);
+  enterApp(user);
+}
+function doLoginFromRegister(){
+  // Session already saved in regNext(3) — just enter app
+  const session = getSession();
+  enterApp(session);
+}
+function doLogout(){
+  clearSession();
+  document.getElementById('app').style.display='none';
+  setRegStep(1);
+  document.getElementById('login-screen').style.display='flex';
+}
+
+// Register steps
+let currentStep=1;
+function setRegStep(n){
+  currentStep=n;
+  for(let i=1;i<=4;i++){
+    const s=document.getElementById('rstep-'+i);
+    const p=document.getElementById('rpanel-'+i);
+    if(s) s.className='reg-step'+(i<n?' done':i===n?' active':'');
+    if(p) p.className='reg-panel'+(i===n?' active':'');
+  }
+  const ll=document.getElementById('reg-login-link');
+  if(ll) ll.style.display=n===4?'none':'block';
+}
+function sendWelcomeEmail(userData){
+  emailjs.send('service_hlrlox8','template_94uf6x3',{
+    nombre: userData.nombre,
+    apellido: userData.apellido,
+    email: userData.email,
+    casillero: userData.casillero
+  }).then(()=>console.log('Email enviado'))
+    .catch(e=>console.warn('Email error:',e));
+}
+
+async function checkEmailExists(email){
+  try{
+    // Check in localStorage registered emails
+    const registered=JSON.parse(localStorage.getItem('te_registered_emails')||'[]');
+    return registered.map(e=>e.toLowerCase()).includes(email.toLowerCase());
+  }catch(e){
+    return false;
+  }
+}
+function saveEmailRegistered(email){
+  try{
+    const registered=JSON.parse(localStorage.getItem('te_registered_emails')||'[]');
+    if(!registered.map(e=>e.toLowerCase()).includes(email.toLowerCase())){
+      registered.push(email.toLowerCase());
+      localStorage.setItem('te_registered_emails',JSON.stringify(registered));
+    }
+  }catch(e){}
+}
+
+function regNext(step){
+  if(step===1){
+    const n=document.getElementById('reg-nombre').value.trim();
+    const a=document.getElementById('reg-apellido').value.trim();
+    const e=document.getElementById('reg-email').value.trim();
+    const w=document.getElementById('reg-wa').value.trim();
+    if(!n||!a){showToast('Por favor ingresa tu nombre y apellido');return;}
+    if(!e||!e.includes('@')){showToast('Ingresa un correo electrónico válido');return;}
+    if(!w){showToast('Ingresa tu número de WhatsApp');return;}
+    // Check duplicate email in Google Sheets
+    const btn=document.querySelector('#rpanel-1 .btn-reg-next');
+    btn.textContent='Verificando...';
+    btn.disabled=true;
+    checkEmailExists(e).then(exists=>{
+      btn.textContent='Continuar →';
+      btn.disabled=false;
+      if(exists){
+        showToast('Este correo ya tiene una cuenta. Por favor inicia sesión.');
+      } else {
+        setRegStep(2);
+      }
+    }).catch(()=>{
+      btn.textContent='Continuar →';
+      btn.disabled=false;
+      setRegStep(2); // If check fails, allow through
+    });
+  } else if(step===2){
+    const c=document.getElementById('reg-ciudad').value;
+    const d=document.getElementById('reg-dir').value.trim();
+    if(!c){showToast('Selecciona tu ciudad en Colombia');return;}
+    if(!d){showToast('Ingresa tu dirección de entrega');return;}
+    setRegStep(3);
+  } else if(step===3){
+    const p=document.getElementById('reg-pass').value;
+    const p2=document.getElementById('reg-pass2').value;
+    const t=document.getElementById('reg-terms').checked;
+    if(p.length<8){showToast('La contraseña debe tener mínimo 8 caracteres');return;}
+    if(p!==p2){showToast('Las contraseñas no coinciden');return;}
+    if(!t){showToast('Debes aceptar los términos de servicio');return;}
+    const num='TE-'+String(Math.floor(10000+Math.random()*90000));
+    const nombre=document.getElementById('reg-nombre').value.trim();
+    const apellido=document.getElementById('reg-apellido').value.trim();
+    const email=document.getElementById('reg-email').value.trim();
+    const wa=document.getElementById('reg-wa').value.trim();
+    const ciudad=document.getElementById('reg-ciudad').value;
+    const dir=document.getElementById('reg-dir').value.trim();
+    const barrio=document.getElementById('reg-barrio').value.trim();
+    const fecha=new Date().toLocaleString('es-CO',{timeZone:'America/Bogota'});
+    // Save full session
+    const userData={nombre,apellido,email,wa,ciudad,dir,casillero:num};
+    saveSession(userData);
+    // Save email to prevent duplicates
+    saveEmailRegistered(email);
+    // Send welcome email
+    sendWelcomeEmail(userData);
+    // Update success screen
+    document.getElementById('reg-cas-num').textContent=num;
+    document.getElementById('reg-cas-name').textContent=nombre+' '+apellido;
+    // Send to Formspree → Google Sheets
+    fetch('https://formspree.io/f/xdabpkgd',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        fecha,
+        nombre,
+        apellido,
+        email,
+        whatsapp:wa,
+        ciudad,
+        direccion:dir,
+        barrio,
+        casillero:num,
+        _subject:'Nuevo registro Trust Envíos — '+nombre+' '+apellido
+      })
+    }).then(r=>{
+      if(r.ok) console.log('Registro enviado a Formspree');
+      else console.warn('Error Formspree',r.status);
+    }).catch(e=>console.warn('Formspree error',e));
+    setRegStep(4);
+  }
+}
+function regBack(step){setRegStep(step-1);}
+
+document.addEventListener('input',function(e){
+  if(e.target.id==='reg-pass'||e.target.id==='reg-pass2'){
+    const p=document.getElementById('reg-pass')?.value||'';
+    const p2=document.getElementById('reg-pass2')?.value||'';
+    const rl=document.getElementById('req-len');
+    const rn=document.getElementById('req-num');
+    const rm=document.getElementById('req-match');
+    if(rl){rl.style.color=p.length>=8?'var(--green)':'var(--text-muted)';rl.textContent=(p.length>=8?'● ':'○ ')+'Mínimo 8 caracteres';}
+    if(rn){rn.style.color=/\d/.test(p)?'var(--green)':'var(--text-muted)';rn.textContent=(/\d/.test(p)?'● ':'○ ')+'Al menos un número';}
+    if(rm){rm.style.color=(p&&p===p2)?'var(--green)':'var(--text-muted)';rm.textContent=((p&&p===p2)?'● ':'○ ')+'Las contraseñas coinciden';}
+  }
+});
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const titles={dashboard:'Dashboard',casillero:'Mi casillero',declarar:'Declarar paquete',paquetes:'Mis paquetes',consolidar:'Consolidar y pagar',tracking:'Tracking de envíos',historial:'Historial',perfil:'Mi perfil'};
+  document.getElementById('topbar-title').textContent=titles[id]||id;
+}
+function showModal(id){document.getElementById('modal-'+id).style.display='flex'}
+function closeModal(id){document.getElementById('modal-'+id).style.display='none'}
+function closeMBg(e,id){if(e.target===document.getElementById('modal-'+id))closeModal(id)}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function copyAddress(){
+  const user = getSession();
+  const name = user ? user.nombre+' '+(user.apellido||'') : 'Tu nombre';
+  const cas = user ? user.casillero : 'TE-XXXXX';
+  const addr=name+' · '+cas+' · 13060 State Road 84, Davie, FL 33325, United States';
+  navigator.clipboard.writeText(addr).catch(()=>{});
+  const btn=document.getElementById('copy-btn');
+  btn.classList.add('cas-copied');
+  btn.textContent='¡Copiado!';
+  setTimeout(()=>{btn.classList.remove('cas-copied');btn.innerHTML='<svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copiar dirección'},2000);
+}
+function checkDeclValue(){
+  const v=parseFloat(document.getElementById('decl-valor').value)||0;
+  const a=document.getElementById('decl-alert');
+  const at=document.getElementById('decl-alert-txt');
+  if(v>=200){a.classList.add('show');at.textContent='Este valor supera $200 USD y requiere trámite comercial. Contáctanos por WhatsApp antes de declarar.';}
+  else if(v>160){a.classList.add('show');at.textContent='Valor cercano al límite de $200 USD. Al consolidar con otros paquetes, verifica que el total no lo supere.';}
+  else{a.classList.remove('show');}
+}
+function togglePkg(card,peso,valor){
+  card.classList.toggle('selected');
+  updateSummary();
+}
+function updateSummary(){
+  const sel=document.querySelectorAll('.pkg-select-card.selected');
+  let totalPeso=0,totalValor=0;
+  const pesos=[2.5,1.2],valores=[95,45];
+  sel.forEach((c,i)=>{
+    const idx=Array.from(document.querySelectorAll('.pkg-select-card')).indexOf(c);
+    if(idx>=0){totalPeso+=pesos[idx]||0;totalValor+=valores[idx]||0;}
+  });
+  const rates=[{max:5,p:25},{max:10,p:35},{max:20,p:45},{max:30,p:60},{max:40,p:75},{max:60,p:90}];
+  const r=rates.find(x=>totalPeso<=x.max)||rates[rates.length-1];
+  document.getElementById('cs-pkgs').textContent=sel.length;
+  document.getElementById('cs-peso').textContent=totalPeso.toFixed(1)+' lbs';
+  document.getElementById('cs-valor').textContent='$'+totalValor+' USD';
+  document.getElementById('cs-total').textContent='$'+(totalPeso>0?r.p:0)+' USD';
+  const warn=document.getElementById('cs-warn');
+  if(totalValor>=200){warn.classList.add('show');document.getElementById('cs-warn-txt').textContent='El valor total supera $200 USD. Este envío requiere trámite comercial. Contáctanos antes de pagar.';}
+  else if(totalValor>160){warn.classList.add('show');document.getElementById('cs-warn-txt').textContent='El valor acumulado se acerca al límite de $200 USD.';}
+  else{warn.classList.remove('show');}
+}
+function declararPaquete(){showToast('Paquete declarado correctamente. Te avisaremos cuando llegue a bodega.');showPage('paquetes',null);}
+function enviarReporte(){closeModal('modal-report');showToast('Reporte enviado. Te contactaremos por WhatsApp pronto.');}
+function pagarEnvio(){closeModal('modal-pago');showToast('¡Pago exitoso! Tu envío será despachado en las próximas 24 horas.');}
+function toggleSidebar(){
+  const sb=document.querySelector('.sidebar');
+  const ov=document.getElementById('sb-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('show');
+}
+function closeSidebar(){
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
+}
+// Close sidebar when nav item clicked on mobile
+document.addEventListener('click',function(e){
+  if(e.target.closest('.nav-item') && window.innerWidth<=768) closeSidebar();
+});
+
+function solicitarPagoWA(){
+  const session = getSession();
+  const nombre = session ? session.nombre+' '+(session.apellido||'') : 'Cliente';
+  const casillero = session ? session.casillero : '--';
+  const pkgs = document.getElementById('cs-pkgs')?.textContent||'0';
+  const peso = document.getElementById('cs-peso')?.textContent||'0';
+  const valor = document.getElementById('cs-valor')?.textContent||'$0';
+  const total = document.getElementById('cs-total')?.textContent||'$0';
+  const fecha = new Date().toLocaleDateString('es-CO');
+  const msg = `Hola Trust Envios! Solicito link de pago para mi envio:
+
+*Cliente:* ${nombre}
+*Casillero:* ${casillero}
+*Fecha:* ${fecha}
+
+*Paquetes:* ${pkgs}
+*Peso total:* ${peso}
+*Valor declarado:* ${valor}
+*Total a pagar:* ${total}
+
+Por favor envieme el link de pago. Gracias!`;
+  window.open('https://wa.me/17542653031?text='+encodeURIComponent(msg),'_blank');
+}
+
+function openWA(){window.open('https://wa.me/17542653031?text=Hola%20Trust%20Env%C3%ADos!%20Necesito%20ayuda%20con%20mi%20casillero','_blank')}
+</script>
+</body>
+</html>
