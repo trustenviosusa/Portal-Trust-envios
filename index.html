@@ -722,10 +722,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
               </div>
               <div class="f-grp form-full">
                 <label class="f-lbl">Foto de factura o confirmación de compra</label>
-                <div class="upload-area" onclick="showToast('Función de carga lista en la versión conectada')">
+                <div class="upload-area" id="upload-zone" onclick="document.getElementById('file-factura').click()">
                   <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg></div>
-                  <div class="upload-text"><strong>Haz clic para subir</strong> o arrastra tu archivo aquí<br>JPG, PNG o PDF · Máx. 5MB</div>
+                  <div class="upload-text" id="upload-text"><strong>Haz clic para subir</strong> o arrastra tu archivo aquí<br>JPG, PNG o PDF · Máx. 5MB</div>
                 </div>
+                <input type="file" id="file-factura" accept=".jpg,.jpeg,.png,.pdf" style="display:none" onchange="handleFileUpload(this)">
               </div>
               <div class="f-grp form-full">
                 <label class="f-lbl">Notas adicionales (opcional)</label>
@@ -1030,6 +1031,7 @@ function enterApp(user){
   document.getElementById('register-screen').style.display='none';
   document.getElementById('app').style.display='block';
   if(user) applyUserToUI(user);
+  setTimeout(renderPaquetes, 100);
 }
 function doLogin(){
   const email = document.getElementById('login-email').value.trim();
@@ -1255,7 +1257,105 @@ function updateSummary(){
   else if(totalValor>160){warn.classList.add('show');document.getElementById('cs-warn-txt').textContent='El valor acumulado se acerca al límite de $200 USD.';}
   else{warn.classList.remove('show');}
 }
-function declararPaquete(){showToast('Paquete declarado correctamente. Te avisaremos cuando llegue a bodega.');showPage('paquetes',null);}
+function declararPaquete(){
+  const inputs = document.querySelectorAll('#page-declarar .f-inp');
+  const descripcion = inputs[2]?.value.trim();
+  const valor = document.getElementById('decl-valor')?.value.trim();
+  const tracking = inputs[1]?.value.trim();
+  const tienda = document.querySelector('#page-declarar select')?.value || 'Otra';
+  const peso = document.querySelectorAll('#page-declarar input[type="number"]')[1]?.value.trim();
+  const notas = document.querySelector('#page-declarar textarea')?.value.trim();
+  const archivo = document.getElementById('file-factura')?.files[0]?.name || '';
+
+  if(!descripcion){showToast('Por favor ingresa la descripción del producto');return;}
+  if(!valor){showToast('Por favor ingresa el valor declarado');return;}
+
+  // Save to localStorage
+  const pkgs = JSON.parse(localStorage.getItem('te_paquetes')||'[]');
+  pkgs.push({
+    id:'PKG-'+Date.now(),
+    tienda, tracking, descripcion,
+    valor:parseFloat(valor)||0,
+    peso:parseFloat(peso)||0,
+    notas:notas||'', archivo,
+    estado:'declarado',
+    fecha:new Date().toLocaleDateString('es-CO')
+  });
+  localStorage.setItem('te_paquetes', JSON.stringify(pkgs));
+
+  // Reset form fields
+  inputs.forEach(i=>{ if(i.id!=='decl-valor') i.value=''; });
+  document.getElementById('decl-valor').value='';
+  document.querySelector('#page-declarar select').selectedIndex=0;
+  document.querySelector('#page-declarar textarea').value='';
+  const zone=document.getElementById('upload-zone');
+  const txt=document.getElementById('upload-text');
+  if(zone){zone.style.borderColor='';zone.style.background='';}
+  if(txt) txt.innerHTML='<strong>Haz clic para subir</strong> o arrastra tu archivo aquí<br>JPG, PNG o PDF · Máx. 5MB';
+  const fi=document.getElementById('file-factura');
+  if(fi) fi.value='';
+  document.getElementById('decl-alert')?.classList.remove('show');
+
+  showToast('Paquete registrado correctamente');
+  renderPaquetes();
+  showPage('paquetes', Array.from(document.querySelectorAll('.nav-item')).find(n=>n.textContent.includes('Mis paquetes')));
+}
+
+function renderPaquetes(){
+  const pkgs = JSON.parse(localStorage.getItem('te_paquetes')||'[]');
+  const card = document.querySelector('#page-paquetes .card');
+  if(!card) return;
+
+  const cardTitle = '<div class="card-title"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:var(--blue-mid)"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Mis paquetes en bodega</div>';
+
+  if(pkgs.length===0){
+    card.innerHTML = cardTitle + '<div class="empty" style="padding:32px 10px"><svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg><p><strong>No tienes paquetes registrados</strong><br>Cuando hagas una compra en USA, regístrala aquí.</p></div>';
+    card.innerHTML += '<div style="margin-top:16px"><button class="btn-primary" onclick="showPage('declarar',null)"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>Registrar paquete</button></div>';
+    return;
+  }
+
+  let html = cardTitle + '<div class="pkg-grid">';
+  pkgs.forEach(p=>{
+    const estadoClass = p.estado==='recibido'?'status-recibido':p.estado==='transito'?'status-transito':'status-espera';
+    const estadoLabel = p.estado==='recibido'?'En bodega':p.estado==='transito'?'En tránsito':'Declarado';
+    html += `<div class="pkg-card">
+      <div class="pkg-icon"><svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>
+      <div class="pkg-info">
+        <div class="pkg-name">${p.descripcion}</div>
+        <div class="pkg-meta">
+          <span>${p.tienda}</span>
+          ${p.peso?'<span>'+p.peso+' lbs</span>':''}
+          <span>$${p.valor} USD</span>
+          <span>${p.fecha}</span>
+          ${p.tracking?'<span>Track: '+p.tracking+'</span>':''}
+        </div>
+      </div>
+      <span class="pkg-status ${estadoClass}">${estadoLabel}</span>
+      <button onclick="eliminarPaquete('${p.id}')" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:18px;padding:4px;line-height:1" title="Eliminar">×</button>
+    </div>`;
+  });
+  html += '</div>';
+  html += '<div style="margin-top:16px;display:flex;gap:10px"><button class="btn-primary" onclick="showPage('declarar',null)"><svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>Registrar nuevo</button><button class="btn-secondary" onclick="showPage('consolidar',null)">Consolidar y pagar</button></div>';
+  card.innerHTML = html;
+
+  // Update nav badge
+  document.querySelectorAll('.nav-badge').forEach(b=>b.remove());
+  const navPkgs = Array.from(document.querySelectorAll('.nav-item')).find(n=>n.textContent.trim().startsWith('Mis paquetes'));
+  if(navPkgs && pkgs.length>0){
+    const badge = document.createElement('span');
+    badge.className='nav-badge';
+    badge.textContent=pkgs.length;
+    navPkgs.appendChild(badge);
+  }
+}
+
+function eliminarPaquete(id){
+  let pkgs = JSON.parse(localStorage.getItem('te_paquetes')||'[]');
+  pkgs = pkgs.filter(p=>p.id!==id);
+  localStorage.setItem('te_paquetes', JSON.stringify(pkgs));
+  renderPaquetes();
+  showToast('Paquete eliminado');
+}
 function enviarReporte(){closeModal('modal-report');showToast('Reporte enviado. Te contactaremos por WhatsApp pronto.');}
 function pagarEnvio(){closeModal('modal-pago');showToast('¡Pago exitoso! Tu envío será despachado en las próximas 24 horas.');}
 function toggleSidebar(){
